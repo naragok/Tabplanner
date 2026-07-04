@@ -8,7 +8,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Pretendard (한글 최적화 프리미엄 폰트) -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
+
         /* 모바일/태블릿 브라우저 주소창 등으로 인한 100vh 오차 보정 */
         html, body {
             height: 100vh;
@@ -35,19 +38,19 @@
             display: none; /* 크롬/사파리 스크롤바 숨김으로 깔끔한 모바일 UI 유지 */
         }
         .todo-filter-btn {
-            background-color: #f1f5f9;
-            color: #64748b;
+            background-color: #EFF1F5;
+            color: #565E72;
         }
         .todo-filter-btn.active {
-            background-color: #4f46e5;
+            background-color: #6440DD;
             color: #fff;
         }
         .dark .todo-filter-btn {
-            background-color: #1e293b;
-            color: #94a3b8;
+            background-color: #292F3F;
+            color: #9BA2B1;
         }
         .dark .todo-filter-btn.active {
-            background-color: #6366f1;
+            background-color: #9679F2;
             color: #fff;
         }
         /* 터치 스크롤 방지 및 스타일러스 펜 최적화 */
@@ -70,11 +73,11 @@
             background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: #C9CED8;
             border-radius: 10px;
         }
         .dark ::-webkit-scrollbar-thumb {
-            background: #475569;
+            background: #3D4457;
             border-radius: 10px;
         }
         
@@ -103,6 +106,22 @@
         }
         .dark .bg-pattern-dot {
             background-image: radial-gradient(rgba(255,255,255,0.12) 1.2px, transparent 1.2px);
+        }
+
+        /* 타이포그래피 리듬: 자간/행간을 살짝 다듬어 프리미엄한 느낌 강화 */
+        body {
+            font-feature-settings: "tnum" 1, "case" 1;
+            letter-spacing: -0.01em;
+        }
+        h1, h2, h3, h4, .font-bold, .font-black {
+            letter-spacing: -0.015em;
+        }
+        /* 상단 헤더에 은은한 그림자로 콘텐츠와 분리감 강화 */
+        header {
+            box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04), 0 4px 16px -8px rgba(15, 23, 42, 0.08);
+        }
+        .dark header {
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 4px 16px -8px rgba(0, 0, 0, 0.4);
         }
 
         /* 900px 이하 스마트폰 및 세로 모드 최적화 레이아웃 오버레이 드로어 */
@@ -165,6 +184,44 @@
                     screens: {
                         'md': '640px',
                         'lg': '900px'
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif']
+                    },
+                    // 프리미엄 톤 리뉴얼: 기존 클래스명(indigo/slate)은 그대로 두고
+                    // 팔레트 값만 더 세련된 톤으로 교체해 전체 화면에 일괄 반영
+                    colors: {
+                        indigo: {
+                            50: '#F3F1FE',
+                            100: '#E7E2FD',
+                            200: '#D1C6FB',
+                            300: '#B3A0F8',
+                            400: '#9679F2',
+                            500: '#7A58EA',
+                            600: '#6440DD',
+                            700: '#5230BC',
+                            800: '#412898',
+                            900: '#34217A',
+                            950: '#1F1350'
+                        },
+                        slate: {
+                            50: '#F8F9FB',
+                            100: '#EFF1F5',
+                            200: '#E2E5EB',
+                            300: '#C9CED8',
+                            350: '#B5BBC7',
+                            400: '#9BA2B1',
+                            450: '#858CA0',
+                            500: '#6C7488',
+                            600: '#565E72',
+                            650: '#4B5266',
+                            700: '#3D4457',
+                            750: '#333A4C',
+                            800: '#292F3F',
+                            850: '#1F2433',
+                            900: '#191D29',
+                            950: '#101319'
+                        }
                     }
                 }
             }
@@ -362,9 +419,6 @@
                 </button>
                 <button onclick="switchTab('pencil')" id="tab-pencil" class="shrink-0 py-3.5 px-0.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-medium text-xs sm:text-sm flex items-center gap-1.5 whitespace-nowrap transition-all">
                     <i data-lucide="pen-tool" class="w-4 h-4"></i> 캔버스
-                </button>
-                <button onclick="switchTab('ai')" id="tab-ai" class="shrink-0 py-3.5 px-0.5 border-b-2 border-transparent text-indigo-500 hover:text-indigo-700 font-medium text-xs sm:text-sm flex items-center gap-1.5 whitespace-nowrap transition-all">
-                    <i data-lucide="sparkles" class="w-4 h-4 text-indigo-500"></i> AI 분석
                 </button>
                 <button onclick="switchTab('dashboard')" id="tab-dashboard" class="shrink-0 py-3.5 px-0.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-medium text-xs sm:text-sm flex items-center gap-1.5 whitespace-nowrap transition-all">
                     <i data-lucide="bar-chart-3" class="w-4 h-4 text-rose-500"></i> 대시보드
@@ -586,10 +640,6 @@
                             <h2 class="text-xs sm:text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
                                 <span class="w-1 h-4 bg-emerald-500 rounded-full"></span>오늘 기분 상태는 어떤가요?
                             </h2>
-                            <button onclick="toggleAmbientMindMusic()" id="ambientMindMusicBtn" class="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-bold text-emerald-600 bg-emerald-50 dark:bg-slate-800 dark:text-emerald-400 rounded-lg transition">
-                                <i data-lucide="music-4" class="w-3.5 h-3.5"></i>
-                                <span>감정 테마곡 재생</span>
-                            </button>
                         </div>
                         
                         <div class="grid grid-cols-5 gap-2 max-w-sm sm:max-w-md mx-auto text-center py-1.5">
@@ -851,65 +901,7 @@
                     </div>
                 </div>
 
-                <!-- 7. AI 분석 탭 -->
-                <div id="content-ai" class="tab-content hidden space-y-4">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-                            <h2 class="text-sm sm:text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                                <i data-lucide="brain-circuit" class="text-indigo-500"></i> AI 분석 가이드
-                            </h2>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">분석 타입</label>
-                                <div class="space-y-1.5">
-                                    <button onclick="setAiTask('summarize')" id="ai-task-summarize" class="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold border border-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
-                                        <i data-lucide="file-check" class="w-4 h-4"></i> 핵심 업무 요약 & 액션 리스트
-                                    </button>
-                                    <button onclick="setAiTask('feedback')" id="ai-task-feedback" class="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-                                        <i data-lucide="heart-pulse" class="w-4 h-4"></i> 마인드/정서 심리 카운슬링
-                                    </button>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">대상 데이터 선택</label>
-                                <select id="aiSourceSelect" class="w-full px-3 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100">
-                                    <option value="both">전체 기록 분석 (일기, 메모, 업무)</option>
-                                    <option value="work">업무 성격만 분석 (업무일지, 회의록)</option>
-                                    <option value="note">마인드 성격만 분석 (일기, 텍스트메모)</option>
-                                </select>
-                            </div>
-                            <button onclick="runGeminiAi()" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-xl text-xs font-bold transition shadow flex items-center justify-center gap-1.5">
-                                <i data-lucide="sparkles" class="w-4 h-4"></i> AI 분석 가동
-                            </button>
-                        </div>
 
-                        <div class="lg:col-span-2 bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col h-[calc(100vh-260px)] min-h-[300px]">
-                            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2 mb-3 shrink-0">
-                                <h3 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                                    <span class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span> AI 분석 레포트
-                                </h3>
-                                <span id="aiTimeLabel" class="text-[10px] text-slate-400">대기 중</span>
-                            </div>
-
-                            <div class="flex-1 overflow-y-auto space-y-4 text-xs leading-relaxed text-slate-600 dark:text-slate-300 pr-1" id="aiResponseContainer">
-                                <div class="text-center py-10 text-slate-400">
-                                    <i data-lucide="message-square-dashed" class="w-10 h-10 mx-auto mb-2 opacity-35"></i>
-                                    <p>AI 어시스턴트 분석 준비 완료</p>
-                                </div>
-                            </div>
-
-                            <div id="aiLoader" class="hidden flex flex-col items-center justify-center py-10 flex-1">
-                                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600 mb-2"></div>
-                                <span class="text-xs text-indigo-500 font-bold">Gemini AI가 깊이있게 요약하는 중...</span>
-                            </div>
-
-                            <button onclick="applyExtractedTodos()" id="applyTodosBtn" class="hidden mt-3 w-full py-2 bg-emerald-600 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 shrink-0 shadow-md">
-                                <i data-lucide="list-plus" class="w-4 h-4"></i> 오늘의 실천 과제를 "할 일 목록"에 즉시 전송하기
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 8. 통계 대시보드 탭 (GitHub 잔디 형태 히트맵 탑재) -->
                 <div id="content-dashboard" class="tab-content hidden space-y-4">
                     <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-5">
                         <div class="flex flex-wrap items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 gap-2">
@@ -1072,7 +1064,7 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Gemini API Key</label>
                     <div class="relative">
-                        <input type="password" id="settingsApiKey" placeholder="AI 분석용 Gemini API 키를 입력하세요..." class="w-full px-3 py-2 pr-10 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <input type="password" id="settingsApiKey" placeholder="필기 인식(OCR)용 Gemini API 키를 입력하세요..." class="w-full px-3 py-2 pr-10 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         <button onclick="toggleApiKeyVisibility()" class="absolute right-3 top-2 text-slate-400 hover:text-slate-600">
                             <i data-lucide="eye" id="apiKeyEyeIcon" class="w-4 h-4"></i>
                         </button>
@@ -1174,13 +1166,9 @@
         let ambientRainGain = null;
         let isAmbientRainPlaying = false;
 
-        let mindMusicNodes = [];
-        let isMindMusicPlaying = false;
-        let mindMusicInterval = null;
 
         // AI 변수
-        let aiTask = "summarize"; 
-        let aiExtractedTodosCache = []; 
+
 
         let confirmModalCallback = null;
         let searchTimeout = null;
@@ -1677,14 +1665,6 @@
             getPlannerData(selectedDateStr).then(data => {
                 updateTagStatus(data ? data.tagColor : null);
                 stopSpeechRecognition();
-                document.getElementById("applyTodosBtn").classList.add("hidden");
-                document.getElementById("aiResponseContainer").innerHTML = `
-                    <div class="text-center py-12 text-slate-400">
-                        <i data-lucide="message-square-dashed" class="w-10 h-10 mx-auto mb-2 opacity-35"></i>
-                        <p>AI 어시스턴트 분석 준비 완료</p>
-                    </div>
-                `;
-                lucide.createIcons();
 
                 const player = document.getElementById("voicePlayer");
                 player.src = "";
@@ -2223,63 +2203,6 @@
             gain.connect(audioCtx.destination);
             osc.start();
             osc.stop(audioCtx.currentTime + 0.6);
-        }
-
-        function toggleAmbientMindMusic() {
-            const btn = document.getElementById("ambientMindMusicBtn");
-            
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-
-            if (isMindMusicPlaying) {
-                stopAmbientMindMusic();
-                btn.querySelector("span").innerText = "감정 테마곡 재생";
-                btn.className = "flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-bold text-emerald-600 bg-emerald-50 dark:bg-slate-800 dark:text-emerald-400 rounded-lg transition";
-            } else {
-                isMindMusicPlaying = true;
-                btn.querySelector("span").innerText = "음악 정지";
-                btn.className = "flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-bold text-white bg-emerald-600 rounded-lg transition";
-
-                const currentMoodVal = document.querySelector(".mood-selector-btn.ring-2")?.id?.replace("mood-", "") || "neutral";
-                let scaleDegrees = [261.63, 329.63, 392.00, 523.25]; 
-
-                if (currentMoodVal === 'bad' || currentMoodVal === 'terrible') {
-                    scaleDegrees = [220.00, 261.63, 329.63, 440.00]; 
-                } else if (currentMoodVal === 'excellent' || currentMoodVal === 'good') {
-                    scaleDegrees = [293.66, 369.99, 440.00, 587.33]; 
-                }
-
-                let noteIndex = 0;
-                mindMusicInterval = setInterval(() => {
-                    playSynthArpeggio(scaleDegrees[noteIndex % scaleDegrees.length]);
-                    noteIndex++;
-                }, 800);
-
-                showToast("현재 내 감정 상태에 매칭되는 마인드 음악을 즉석 연주합니다.");
-            }
-        }
-
-        function playSynthArpeggio(frequency) {
-            if (!audioCtx || audioCtx.state === 'suspended') return;
-
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-
-            osc.type = "triangle"; 
-            osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
-
-            gainNode.gain.setValueAtTime(0.0, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.03, audioCtx.currentTime + 0.1);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
-
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-
-            osc.start();
-            osc.stop(audioCtx.currentTime + 1.3);
-
-            mindMusicNodes.push({ osc, gainNode });
         }
 
         function saveWorkLogData(showToastAlert = false) {
@@ -3450,9 +3373,8 @@
         // --- 15. 작업대 탭 제어 ---
         function switchTab(tabId) {
             activeTab = tabId;
-            stopAmbientMindMusic();
 
-            const tabs = ["todo", "work", "habit", "mood", "meeting", "note", "pencil", "ai", "dashboard"];
+            const tabs = ["todo", "work", "habit", "mood", "meeting", "note", "pencil", "dashboard"];
             tabs.forEach(t => {
                 const tabBtn = document.getElementById(`tab-${t}`);
                 const tabContent = document.getElementById(`content-${t}`);
@@ -3485,11 +3407,6 @@
             savePlannerData(selectedDateStr, { mood: moodType }).then(() => {
                 selectMoodButton(moodType);
                 showToast("오늘 기분이 정상 기록되었습니다.");
-                
-                if (isMindMusicPlaying) {
-                    toggleAmbientMindMusic(); 
-                    toggleAmbientMindMusic(); 
-                }
             });
         }
 
@@ -3606,219 +3523,7 @@
             }
         }
 
-        function setAiTask(task) {
-            aiTask = task;
-            
-            const summarizeBtn = document.getElementById("ai-task-summarize");
-            const feedbackBtn = document.getElementById("ai-task-feedback");
 
-            if (task === 'summarize') {
-                summarizeBtn.className = "w-full text-left px-3 py-2 rounded-lg text-xs font-semibold border border-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5";
-                feedbackBtn.className = "w-full text-left px-3 py-2 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 flex items-center gap-1.5";
-            } else {
-                feedbackBtn.className = "w-full text-left px-3 py-2 rounded-lg text-xs font-semibold border border-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5";
-                summarizeBtn.className = "w-full text-left px-3 py-2 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 flex items-center gap-1.5";
-            }
-        }
-
-        async function runGeminiAi() {
-            const apiKey = localStorage.getItem("tabPlanner_geminiApiKey") || "";
-            const activeModel = localStorage.getItem("tabPlanner_geminiModel") || "gemini-2.5-flash-preview-09-2025";
-
-            if (!apiKey) {
-                showToast("⚙️ 설정을 눌러 Gemini API Key를 등록해주세요.");
-                openSettingsModal();
-                return;
-            }
-
-            const source = document.getElementById("aiSourceSelect").value;
-            const container = document.getElementById("aiResponseContainer");
-            const loader = document.getElementById("aiLoader");
-            const applyBtn = document.getElementById("applyTodosBtn");
-
-            let sourceText = "";
-            const meetingTitle = document.getElementById("meetingTitle").value;
-            const meetingDecisions = document.getElementById("meetingDecisions").value;
-            const meetingNotes = document.getElementById("meetingNotes").value;
-            const textNote = document.getElementById("noteContent").value;
-            
-            const workStatus = document.getElementById("workStatus").value;
-            const workSummary = document.getElementById("workSummary").value;
-            const workPending = document.getElementById("workPending").value;
-            const workIssues = document.getElementById("workIssues").value;
-
-            let timelineStr = "";
-            const hours = ["09", "10", "11", "12", "14", "15", "16", "17", "18"];
-            hours.forEach(h => {
-                const val = document.getElementById(`time-${h}`)?.value;
-                if (val) {
-                    timelineStr += `- ${h}시: ${val}\n`;
-                }
-            });
-
-            const diaryContent = document.getElementById("diaryContent").value;
-            let currentMoodText = "기록없음";
-            const currentMoodVal = document.querySelector(".mood-selector-btn.ring-2")?.id?.replace("mood-", "");
-            if (currentMoodVal) {
-                switch(currentMoodVal) {
-                    case 'excellent': currentMoodText = "최고 😄"; break;
-                    case 'good': currentMoodText = "좋음 🙂"; break;
-                    case 'neutral': currentMoodText = "보통 😐"; break;
-                    case 'bad': currentMoodText = "우울 🙁"; break;
-                    case 'terrible': currentMoodText = "지침 😢"; break;
-                }
-            }
-
-            if (source === "both" || source === "work") {
-                if (workSummary || timelineStr) {
-                    sourceText += `[금일 작업 일지]:\n- 상태: ${workStatus}\n- 시간 타임라인:\n${timelineStr}- 성과 요약: ${workSummary}\n- 미완료 사항: ${workPending}\n- 이슈: ${workIssues}\n\n`;
-                }
-                if (meetingTitle || meetingNotes) {
-                    sourceText += `[회의명]: ${meetingTitle}\n[회의의결사항]: ${meetingDecisions}\n[회의록본문]: ${meetingNotes}\n\n`;
-                }
-            }
-            if (source === "both" || source === "note") {
-                if (textNote) {
-                    sourceText += `[텍스트 메모 내용]: ${textNote}\n\n`;
-                }
-                if (diaryContent || currentMoodVal) {
-                    sourceText += `[오늘의 자아 감정]: ${currentMoodText}\n[오늘의 감정 일기]: ${diaryContent}\n\n`;
-                }
-            }
-
-            if (!sourceText.trim()) {
-                showToast("스캔 분석할 수 있는 데이터 내용이 없습니다.");
-                return;
-            }
-
-            container.innerHTML = "";
-            loader.classList.remove("hidden");
-            applyBtn.classList.add("hidden");
-            aiExtractedTodosCache = [];
-
-            let systemPrompt = "";
-            let userPrompt = "";
-
-            if (aiTask === "summarize") {
-                systemPrompt = `당신은 최고 수준의 업무 비서이자 분석가입니다. 제공된 기록 본문(업무 일지, 타임라인, 회의록 등)을 바탕으로 핵심 분석 결과를 한글로 생성해야 합니다.
-구조는 반드시 다음 형식을 유지해 주세요:
-
-### 📌 오늘의 요약 브리핑
-(여기에 오늘 있었던 업무적 중요 흐름과 아웃라인 요약을 기술하고, 시간 배분의 적절성을 2-3줄로 평해 줍니다.)
-
-### 🎯 실천 과제 (Action Items)
-- [ ] 할일 내용 1 (예: 이월된 시안 수정본 오후까지 완성하기)
-- [ ] 할일 내용 2
-
-**규칙**:
-1. 실천 과제는 반드시 동사로 끝나는 명확한 형태여야 하며, '- [ ] 내용' 양식을 정확히 준수해 주세요.
-2. 분석 대상에서 실질적으로 다음 스텝으로 추진해야 할 투두를 최대 5개까지 세밀하게 추출하세요.`;
-                userPrompt = `아래 문서를 정독하고 핵심 요약과 실천 과제를 양식에 맞게 분해해 주세요.\n\n${sourceText}`;
-            } else {
-                systemPrompt = `당신은 다정한 심리 상담가이자 마음 치료사입니다. 사용자가 남긴 오늘 하루의 감정 상태와 일기 내용을 정성스레 탐독하고, 감정에 깊이 공감해 준 뒤 다음날을 용기 내어 나아갈 수 있는 따뜻하고 치유적인 위로 코멘트와 작은 리프레시 루틴 추천 등을 친근한 존댓말로 전해 주어야 합니다.`;
-                userPrompt = `오늘 하루 나의 마음 상태와 일기를 건냅니다. 정독하고 편안한 피드백을 적어 주세요.\n\n${sourceText}`;
-            }
-
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent?key=${apiKey}`;
-
-            const payload = {
-                contents: [{ parts: [{ text: userPrompt }] }],
-                systemInstruction: {
-                    parts: [{ text: systemPrompt }]
-                }
-            };
-
-            let response = null;
-            let success = false;
-            let delay = 1000;
-
-            for (let attempt = 0; attempt < 3; attempt++) {
-                try {
-                    response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    if (response.ok) {
-                        success = true;
-                        break;
-                    }
-                } catch(err) {
-                    await new Promise(r => setTimeout(r, delay));
-                    delay *= 2;
-                }
-            }
-
-            loader.classList.add("hidden");
-
-            if (!success) {
-                container.innerHTML = `<p class="text-rose-500 font-bold text-center py-8">AI 비서 호출에 실패했습니다. 키를 재확인하세요.</p>`;
-                return;
-            }
-
-            const result = await response.json();
-            const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-
-            if (aiText) {
-                container.innerHTML = formatMarkdownSimple(aiText);
-                document.getElementById("aiTimeLabel").innerText = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) + " 분석 완료";
-
-                if (aiTask === "summarize") {
-                    parseExtractedTodos(aiText);
-                    if (aiExtractedTodosCache.length > 0) {
-                        applyBtn.classList.remove("hidden");
-                    }
-                }
-            } else {
-                container.innerHTML = `<p class="text-slate-400 text-center py-8">분석 결과를 받아오지 못했습니다.</p>`;
-            }
-        }
-
-        function formatMarkdownSimple(text) {
-            return text
-                .replace(/### (.*)/g, '<h4 class="text-sm font-bold text-slate-800 dark:text-white mt-4 mb-2">$1</h4>')
-                .replace(/\*\*(.*?)\*\"/g, '<strong>$1</strong>')
-                .replace(/-\s*\[\s*\]\s*(.*)/g, '<div class="flex items-center gap-1.5 my-1.5"><span class="w-3.5 h-3.5 rounded border border-indigo-400 inline-block shrink-0"></span><span class="text-slate-700 dark:text-slate-300">$1</span></div>')
-                .replace(/-\s(.*)/g, '<li class="list-disc list-inside ml-2">$1</li>')
-                .replace(/\n/g, '<br>');
-        }
-
-        function parseExtractedTodos(markdownText) {
-            aiExtractedTodosCache = [];
-            const lines = markdownText.split("\n");
-            lines.forEach(line => {
-                const match = line.match(/^-\s*\[\s*\]\s*(.+)/);
-                if (match && match[1]) {
-                    const cleanTodo = match[1].trim();
-                    if (cleanTodo) {
-                        aiExtractedTodosCache.push(cleanTodo);
-                    }
-                }
-            });
-        }
-
-        function applyExtractedTodos() {
-            if (aiExtractedTodosCache.length === 0) return;
-
-            getPlannerData(selectedDateStr).then(data => {
-                const currentTodos = data ? (data.todos || []) : [];
-                
-                aiExtractedTodosCache.forEach(newText => {
-                    const exist = currentTodos.some(t => t.text === newText);
-                    if (!exist) {
-                        currentTodos.push({ text: newText, done: false });
-                    }
-                });
-
-                savePlannerData(selectedDateStr, { todos: currentTodos }).then(() => {
-                    loadSelectedDateData();
-                    showToast(`성공적으로 ${aiExtractedTodosCache.length}개의 일정을 할 일 목록에 주입했습니다.`);
-                    document.getElementById("applyTodosBtn").classList.add("hidden");
-                });
-            });
-        }
-
-        // --- 백업 데이터 처리 ---
         function exportData() {
             if (!db) return;
             const transaction = db.transaction(["plannerStore"], "readonly");
@@ -3929,20 +3634,6 @@
             renderCalendar();
             loadSelectedDateData();
             showToast("오늘 날짜로 이동했습니다.");
-        }
-
-        function stopAmbientMindMusic() {
-            isMindMusicPlaying = false;
-            clearInterval(mindMusicInterval);
-            mindMusicNodes.forEach(node => {
-                try { node.osc.stop(); } catch(e){}
-            });
-            mindMusicNodes = [];
-            const btn = document.getElementById("ambientMindMusicBtn");
-            if (btn) {
-                btn.querySelector("span").innerText = "감정 테마곡 재생";
-                btn.className = "flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-bold text-emerald-600 bg-emerald-50 dark:bg-slate-800 dark:text-emerald-400 rounded-lg transition";
-            }
         }
 
         function downloadHandwriting() {
