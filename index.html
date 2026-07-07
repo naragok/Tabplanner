@@ -243,10 +243,10 @@
         }
     </script>
 </head>
-<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans min-h-screen flex flex-col antialiased transition-colors duration-200 overflow-hidden select-none">
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans min-h-screen flex flex-col antialiased transition-colors duration-200 overflow-hidden select-none" style="padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); padding-bottom: env(safe-area-inset-bottom);">
 
     <!-- 상단 헤더 -->
-    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 px-4 py-3 sm:px-6 flex items-center justify-between gap-2 shrink-0">
+    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 px-4 py-3 sm:px-6 flex items-center justify-between gap-2 shrink-0" style="padding-top: calc(0.75rem + env(safe-area-inset-top));">
         <div class="flex items-center gap-2">
             <!-- 달력 토글 컨트롤러 (모바일 한 손 동작 지원) -->
             <button onclick="toggleSidebar()" class="p-2.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-slate-800 dark:text-indigo-400 dark:hover:bg-slate-700 rounded-xl transition flex items-center gap-1.5" title="일정 달력 열기/닫기">
@@ -419,6 +419,9 @@
                 </button>
                 <button onclick="switchTab('work')" id="tab-work" class="shrink-0 py-3.5 px-0.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-medium text-xs sm:text-sm flex items-center gap-1.5 whitespace-nowrap transition-all">
                     <i data-lucide="briefcase" class="w-4 h-4 text-blue-500"></i> 일지
+                </button>
+                <button onclick="switchTab('siteLog')" id="tab-siteLog" class="shrink-0 py-3.5 px-0.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-medium text-xs sm:text-sm flex items-center gap-1.5 whitespace-nowrap transition-all">
+                    <i data-lucide="hard-hat" class="w-4 h-4 text-orange-500"></i> 일지(현장)
                 </button>
                 <button onclick="switchTab('habit')" id="tab-habit" class="shrink-0 py-3.5 px-0.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-medium text-xs sm:text-sm flex items-center gap-1.5 whitespace-nowrap transition-all">
                     <i data-lucide="award" class="w-4 h-4 text-amber-500"></i> 습관
@@ -624,6 +627,54 @@
                                 <label class="block text-[10px] sm:text-xs font-bold text-slate-500">⚠️ 특이사항 / 허들</label>
                                 <textarea id="workIssues" rows="3" oninput="debounceSaveWorkLog()" placeholder="이슈 및 해결이 필요한 허들..." class="w-full px-2.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none"></textarea>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1-2. 현장 일지 탭 -->
+                <div id="content-siteLog" class="tab-content hidden space-y-4">
+                    <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                            <h2 class="text-xs sm:text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                <span class="w-1 h-4 bg-orange-500 rounded-full"></span>현장 일지
+                            </h2>
+                            <button onclick="saveSiteLogData(true)" class="px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-lg transition flex items-center gap-1">
+                                <i data-lucide="save" class="w-3.5 h-3.5"></i> 저장
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="space-y-1">
+                                <label class="block text-[10px] sm:text-xs font-bold text-slate-500 flex items-center gap-1">
+                                    <i data-lucide="hammer" class="w-3.5 h-3.5 text-orange-500"></i> 금일 작업사항
+                                </label>
+                                <textarea id="siteLogWork" rows="5" oninput="debounceSaveSiteLog()" placeholder="예: 3층 슬라브 철근 배근, 지하 1층 거푸집 해체..." class="w-full px-2.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none resize-none"></textarea>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-[10px] sm:text-xs font-bold text-slate-500 flex items-center gap-1">
+                                    <i data-lucide="truck" class="w-3.5 h-3.5 text-blue-500"></i> 자재반입
+                                </label>
+                                <textarea id="siteLogMaterials" rows="5" oninput="debounceSaveSiteLog()" placeholder="예: 레미콘 25-24-150 6대, 철근 D22 3톤 반입..." class="w-full px-2.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none resize-none"></textarea>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-[10px] sm:text-xs font-bold text-slate-500 flex items-center gap-1">
+                                    <i data-lucide="forklift" class="w-3.5 h-3.5 text-amber-600"></i> 장비 투입 현황
+                                </label>
+                                <textarea id="siteLogEquipment" rows="4" oninput="debounceSaveSiteLog()" placeholder="예: 25톤 크레인 1대, 굴삭기 0.6㎥ 2대..." class="w-full px-2.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none resize-none"></textarea>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-[10px] sm:text-xs font-bold text-slate-500 flex items-center gap-1">
+                                    <i data-lucide="users" class="w-3.5 h-3.5 text-emerald-600"></i> 인력 출력사항
+                                </label>
+                                <textarea id="siteLogManpower" rows="4" oninput="debounceSaveSiteLog()" placeholder="예: 형틀목수 5명, 철근공 3명, 보통인부 4명..." class="w-full px-2.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none resize-none"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="block text-[10px] sm:text-xs font-bold text-slate-500 flex items-center gap-1">
+                                <i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-rose-500"></i> 특이사항
+                            </label>
+                            <textarea id="siteLogNotes" rows="3" oninput="debounceSaveSiteLog()" placeholder="예: 우천으로 오후 타설 중단, 안전교육 실시..." class="w-full px-2.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none resize-none"></textarea>
                         </div>
                     </div>
                 </div>
@@ -1237,6 +1288,7 @@
 
         let noteSaveTimeout = null;
         let workLogSaveTimeout = null;
+        let siteLogSaveTimeout = null;
 
         // 음성 인식 STT
         let recognition = null;
@@ -1298,7 +1350,7 @@
 
         // --- 키보드 단축키 ---
         function initKeyboardShortcuts() {
-            const tabOrder = ["todo", "work", "habit", "mood", "meeting", "note", "pencil", "dashboard"];
+            const tabOrder = ["todo", "work", "siteLog", "habit", "mood", "meeting", "note", "pencil", "dashboard"];
 
             document.addEventListener("keydown", (e) => {
                 const tag = (e.target.tagName || "").toLowerCase();
@@ -1327,7 +1379,7 @@
                     return;
                 }
 
-                if (e.altKey && /^[1-8]$/.test(e.key)) {
+                if (e.altKey && /^[1-9]$/.test(e.key)) {
                     e.preventDefault();
                     const idx = parseInt(e.key, 10) - 1;
                     if (tabOrder[idx]) switchTab(tabOrder[idx]);
@@ -1338,6 +1390,7 @@
         function saveCurrentTabData() {
             switch (activeTab) {
                 case "work": saveWorkLogData(true); break;
+                case "siteLog": saveSiteLogData(true); break;
                 case "mood": saveDiary(); break;
                 case "meeting": saveMeetingMinutes(); break;
                 case "note": saveNoteData(); showToast("메모가 저장되었습니다."); break;
@@ -1877,6 +1930,13 @@
                     document.getElementById("workPending").value = work.pending || "";
                     document.getElementById("workIssues").value = work.issues || "";
                     
+                    const siteLog = data.siteLog || { work: "", materials: "", equipment: "", manpower: "", notes: "" };
+                    document.getElementById("siteLogWork").value = siteLog.work || "";
+                    document.getElementById("siteLogMaterials").value = siteLog.materials || "";
+                    document.getElementById("siteLogEquipment").value = siteLog.equipment || "";
+                    document.getElementById("siteLogManpower").value = siteLog.manpower || "";
+                    document.getElementById("siteLogNotes").value = siteLog.notes || "";
+                    
                     const timeline = work.timeline || {};
                     const hours = ["09", "10", "11", "12", "14", "15", "16", "17", "18"];
                     hours.forEach(h => {
@@ -1916,6 +1976,11 @@
                     document.getElementById("workSummary").value = "";
                     document.getElementById("workPending").value = "";
                     document.getElementById("workIssues").value = "";
+                    document.getElementById("siteLogWork").value = "";
+                    document.getElementById("siteLogMaterials").value = "";
+                    document.getElementById("siteLogEquipment").value = "";
+                    document.getElementById("siteLogManpower").value = "";
+                    document.getElementById("siteLogNotes").value = "";
                     const hours = ["09", "10", "11", "12", "14", "15", "16", "17", "18"];
                     hours.forEach(h => {
                         const inputEl = document.getElementById(`time-${h}`);
@@ -2419,6 +2484,27 @@
             gain.connect(audioCtx.destination);
             osc.start();
             osc.stop(audioCtx.currentTime + 0.6);
+        }
+
+        function saveSiteLogData(showToastAlert = false) {
+            const siteLogObj = {
+                work: document.getElementById("siteLogWork").value.trim(),
+                materials: document.getElementById("siteLogMaterials").value.trim(),
+                equipment: document.getElementById("siteLogEquipment").value.trim(),
+                manpower: document.getElementById("siteLogManpower").value.trim(),
+                notes: document.getElementById("siteLogNotes").value.trim()
+            };
+
+            savePlannerData(selectedDateStr, { siteLog: siteLogObj }).then(() => {
+                if (showToastAlert) showToast("현장 일지가 기기에 안전하게 저장되었습니다.");
+            });
+        }
+
+        function debounceSaveSiteLog() {
+            clearTimeout(siteLogSaveTimeout);
+            siteLogSaveTimeout = setTimeout(() => {
+                saveSiteLogData();
+            }, 1000);
         }
 
         function saveWorkLogData(showToastAlert = false) {
@@ -3718,7 +3804,7 @@
         function switchTab(tabId) {
             activeTab = tabId;
 
-            const tabs = ["todo", "work", "habit", "mood", "meeting", "note", "pencil", "dashboard"];
+            const tabs = ["todo", "work", "siteLog", "habit", "mood", "meeting", "note", "pencil", "dashboard"];
             tabs.forEach(t => {
                 const tabBtn = document.getElementById(`tab-${t}`);
                 const tabContent = document.getElementById(`content-${t}`);
