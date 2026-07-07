@@ -185,6 +185,22 @@
                 background: white !important;
                 color: black !important;
             }
+            body.printing-sitelog #content-meeting,
+            body.printing-sitelog #content-meeting * {
+                visibility: hidden !important;
+            }
+            body.printing-sitelog #content-siteLog,
+            body.printing-sitelog #content-siteLog * {
+                visibility: visible;
+            }
+            body.printing-sitelog #content-siteLog {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white !important;
+                color: black !important;
+            }
             .print-hidden {
                 display: none !important;
             }
@@ -634,38 +650,80 @@
                 <!-- 1-2. 현장 일지 탭 -->
                 <div id="content-siteLog" class="tab-content hidden space-y-4">
                     <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-                        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 flex-wrap gap-2 print-hidden">
                             <h2 class="text-xs sm:text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
                                 <span class="w-1 h-4 bg-orange-500 rounded-full"></span>현장 일지
                             </h2>
-                            <button onclick="saveSiteLogData(true)" class="px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-lg transition flex items-center gap-1">
-                                <i data-lucide="save" class="w-3.5 h-3.5"></i> 저장
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <button onclick="copyYesterdaySiteLog()" class="px-2.5 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-lg transition flex items-center gap-1">
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> 어제 인력/장비 복사
+                                </button>
+                                <button onclick="printSiteLogReport()" class="px-2.5 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-lg transition flex items-center gap-1">
+                                    <i data-lucide="printer" class="w-3.5 h-3.5"></i> 인쇄/PDF
+                                </button>
+                                <button onclick="saveSiteLogData(true)" class="px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-lg transition flex items-center gap-1">
+                                    <i data-lucide="save" class="w-3.5 h-3.5"></i> 저장
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 인쇄 전용 헤더 -->
+                        <div class="hidden print:block border-b-2 border-slate-800 pb-3 mb-2">
+                            <h1 class="text-xl font-bold text-slate-900">현장 일일 작업일지</h1>
+                            <p class="text-xs text-slate-500 mt-1" id="siteLogPrintDateLabel">-</p>
+                        </div>
+
+                        <!-- 날씨 정보 바 -->
+                        <div class="flex items-center justify-between bg-sky-50 dark:bg-sky-950/30 border border-sky-100 dark:border-sky-900/50 rounded-xl px-3 py-2 print-hidden">
+                            <div id="siteLogWeatherInfo" class="flex items-center gap-2 text-xs text-sky-700 dark:text-sky-300 font-semibold">
+                                <i data-lucide="cloud" class="w-4 h-4"></i>
+                                <span>날씨 정보를 불러오려면 새로고침을 눌러주세요.</span>
+                            </div>
+                            <button onclick="refreshSiteWeather()" class="p-1.5 text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/40 rounded-lg transition">
+                                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
                             </button>
                         </div>
+                        <div id="siteLogWeatherPrint" class="hidden print:block text-xs text-slate-600 -mt-2"></div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div class="space-y-1">
-                                <label class="block text-[10px] sm:text-xs font-bold text-slate-500 flex items-center gap-1">
-                                    <i data-lucide="hammer" class="w-3.5 h-3.5 text-orange-500"></i> 금일 작업사항
+                                <label class="block text-[10px] sm:text-xs font-bold text-slate-500 flex items-center justify-between gap-1">
+                                    <span class="flex items-center gap-1"><i data-lucide="hammer" class="w-3.5 h-3.5 text-orange-500"></i> 금일 작업사항</span>
+                                    <button onclick="savePhraseTemplate('siteLogWork')" class="print-hidden flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold text-orange-600 bg-orange-50 dark:bg-orange-950/40 dark:text-orange-400 rounded transition hover:bg-orange-100">
+                                        <i data-lucide="plus" class="w-3 h-3"></i> 문구 저장
+                                    </button>
                                 </label>
+                                <div id="phrases-siteLogWork" class="flex flex-wrap gap-1 print-hidden"></div>
                                 <textarea id="siteLogWork" rows="5" oninput="debounceSaveSiteLog()" placeholder="예: 3층 슬라브 철근 배근, 지하 1층 거푸집 해체..." class="w-full px-2.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none resize-none"></textarea>
                             </div>
                             <div class="space-y-1">
-                                <label class="block text-[10px] sm:text-xs font-bold text-slate-500 flex items-center gap-1">
-                                    <i data-lucide="truck" class="w-3.5 h-3.5 text-blue-500"></i> 자재반입
+                                <label class="block text-[10px] sm:text-xs font-bold text-slate-500 flex items-center justify-between gap-1">
+                                    <span class="flex items-center gap-1"><i data-lucide="truck" class="w-3.5 h-3.5 text-blue-500"></i> 자재반입</span>
+                                    <button onclick="savePhraseTemplate('siteLogMaterials')" class="print-hidden flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-950/40 dark:text-blue-400 rounded transition hover:bg-blue-100">
+                                        <i data-lucide="plus" class="w-3 h-3"></i> 문구 저장
+                                    </button>
                                 </label>
+                                <div id="phrases-siteLogMaterials" class="flex flex-wrap gap-1 print-hidden"></div>
                                 <textarea id="siteLogMaterials" rows="5" oninput="debounceSaveSiteLog()" placeholder="예: 레미콘 25-24-150 6대, 철근 D22 3톤 반입..." class="w-full px-2.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none resize-none"></textarea>
                             </div>
                             <div class="space-y-1">
-                                <label class="block text-[10px] sm:text-xs font-bold text-slate-500 flex items-center gap-1">
-                                    <i data-lucide="forklift" class="w-3.5 h-3.5 text-amber-600"></i> 장비 투입 현황
+                                <label class="block text-[10px] sm:text-xs font-bold text-slate-500 flex items-center justify-between gap-1">
+                                    <span class="flex items-center gap-1"><i data-lucide="forklift" class="w-3.5 h-3.5 text-amber-600"></i> 장비 투입 현황</span>
+                                    <button onclick="savePhraseTemplate('siteLogEquipment')" class="print-hidden flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold text-amber-700 bg-amber-50 dark:bg-amber-950/40 dark:text-amber-400 rounded transition hover:bg-amber-100">
+                                        <i data-lucide="plus" class="w-3 h-3"></i> 문구 저장
+                                    </button>
                                 </label>
+                                <div id="phrases-siteLogEquipment" class="flex flex-wrap gap-1 print-hidden"></div>
                                 <textarea id="siteLogEquipment" rows="4" oninput="debounceSaveSiteLog()" placeholder="예: 25톤 크레인 1대, 굴삭기 0.6㎥ 2대..." class="w-full px-2.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none resize-none"></textarea>
                             </div>
                             <div class="space-y-1">
-                                <label class="block text-[10px] sm:text-xs font-bold text-slate-500 flex items-center gap-1">
-                                    <i data-lucide="users" class="w-3.5 h-3.5 text-emerald-600"></i> 인력 출력사항
+                                <label class="block text-[10px] sm:text-xs font-bold text-slate-500 flex items-center justify-between gap-1">
+                                    <span class="flex items-center gap-1"><i data-lucide="users" class="w-3.5 h-3.5 text-emerald-600"></i> 인력 출력사항</span>
+                                    <button onclick="savePhraseTemplate('siteLogManpower')" class="print-hidden flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400 rounded transition hover:bg-emerald-100">
+                                        <i data-lucide="plus" class="w-3 h-3"></i> 문구 저장
+                                    </button>
                                 </label>
+                                <div id="phrases-siteLogManpower" class="flex flex-wrap gap-1 print-hidden"></div>
                                 <textarea id="siteLogManpower" rows="4" oninput="debounceSaveSiteLog()" placeholder="예: 형틀목수 5명, 철근공 3명, 보통인부 4명..." class="w-full px-2.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none resize-none"></textarea>
                             </div>
                         </div>
@@ -1024,7 +1082,7 @@
                         </div>
 
                         <!-- 이번 주 요약 카드 -->
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
                             <div class="bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-3 rounded-xl text-center">
                                 <span class="text-[10px] text-slate-400 font-bold block mb-1">이번주 할 일 완료율</span>
                                 <span id="weekTodoRate" class="text-lg font-black text-indigo-500">0%</span>
@@ -1040,6 +1098,10 @@
                             <div class="bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-3 rounded-xl text-center">
                                 <span class="text-[10px] text-slate-400 font-bold block mb-1">이번주 평균 기분</span>
                                 <span id="weekMoodAvg" class="text-lg font-black text-blue-500">-</span>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-3 rounded-xl text-center">
+                                <span class="text-[10px] text-slate-400 font-bold block mb-1">이번주 총 투입 인력</span>
+                                <span id="weekManpowerTotal" class="text-lg font-black text-orange-500">0명</span>
                             </div>
                         </div>
 
@@ -1346,6 +1408,7 @@
             setInterval(checkActiveReminders, 60000);
 
             initKeyboardShortcuts();
+            renderAllPhraseChips();
         };
 
         // --- 키보드 단축키 ---
@@ -1936,6 +1999,7 @@
                     document.getElementById("siteLogEquipment").value = siteLog.equipment || "";
                     document.getElementById("siteLogManpower").value = siteLog.manpower || "";
                     document.getElementById("siteLogNotes").value = siteLog.notes || "";
+                    autoLoadSiteWeather(data);
                     
                     const timeline = work.timeline || {};
                     const hours = ["09", "10", "11", "12", "14", "15", "16", "17", "18"];
@@ -1981,6 +2045,7 @@
                     document.getElementById("siteLogEquipment").value = "";
                     document.getElementById("siteLogManpower").value = "";
                     document.getElementById("siteLogNotes").value = "";
+                    autoLoadSiteWeather(null);
                     const hours = ["09", "10", "11", "12", "14", "15", "16", "17", "18"];
                     hours.forEach(h => {
                         const inputEl = document.getElementById(`time-${h}`);
@@ -2484,6 +2549,226 @@
             gain.connect(audioCtx.destination);
             osc.start();
             osc.stop(audioCtx.currentTime + 0.6);
+        }
+
+        // --- 현장일지: 자주 쓰는 문구 템플릿 ---
+        const PHRASE_FIELDS = ["siteLogWork", "siteLogMaterials", "siteLogEquipment", "siteLogManpower"];
+
+        function getPhraseList(fieldId) {
+            return JSON.parse(localStorage.getItem(`tabPlanner_phrases_${fieldId}`)) || [];
+        }
+
+        function savePhraseList(fieldId, list) {
+            localStorage.setItem(`tabPlanner_phrases_${fieldId}`, JSON.stringify(list));
+        }
+
+        function savePhraseTemplate(fieldId) {
+            const el = document.getElementById(fieldId);
+            const text = el.value.trim();
+            if (!text) {
+                showToast("저장할 내용을 먼저 입력해 주세요.");
+                return;
+            }
+            const list = getPhraseList(fieldId);
+            if (list.includes(text)) {
+                showToast("이미 저장된 문구입니다.");
+                return;
+            }
+            list.push(text);
+            savePhraseList(fieldId, list);
+            renderPhraseChips(fieldId);
+            showToast("자주 쓰는 문구로 저장했습니다.");
+        }
+
+        function insertPhrase(fieldId, text) {
+            const el = document.getElementById(fieldId);
+            el.value = el.value.trim() ? el.value.trim() + "\n" + text : text;
+            if (fieldId === "siteLogWork" || fieldId === "siteLogMaterials" || fieldId === "siteLogEquipment" || fieldId === "siteLogManpower") {
+                debounceSaveSiteLog();
+            }
+        }
+
+        function deletePhraseTemplate(fieldId, index, event) {
+            event.stopPropagation();
+            const list = getPhraseList(fieldId);
+            list.splice(index, 1);
+            savePhraseList(fieldId, list);
+            renderPhraseChips(fieldId);
+        }
+
+        function escapeForJsAttr(str) {
+            return str.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/\n/g, "\\n").replace(/"/g, "&quot;");
+        }
+
+        function renderPhraseChips(fieldId) {
+            const container = document.getElementById(`phrases-${fieldId}`);
+            if (!container) return;
+            const list = getPhraseList(fieldId);
+
+            container.innerHTML = list.map((text, idx) => `
+                <button onclick="insertPhrase('${fieldId}', '${escapeForJsAttr(text)}')" class="group flex items-center gap-1 px-2 py-1 text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-lg transition hover:bg-slate-200 dark:hover:bg-slate-700">
+                    <span>${text.length > 14 ? text.slice(0, 14) + "…" : text}</span>
+                    <span onclick="deletePhraseTemplate('${fieldId}', ${idx}, event)" class="opacity-50 group-hover:opacity-100 hover:text-rose-500">✕</span>
+                </button>
+            `).join("");
+        }
+
+        function renderAllPhraseChips() {
+            PHRASE_FIELDS.forEach(f => renderPhraseChips(f));
+        }
+
+        // --- 현장일지: 어제 인력/장비 복사 ---
+        function copyYesterdaySiteLog() {
+            const d = parseDateSafe(selectedDateStr);
+            d.setDate(d.getDate() - 1);
+            const yesterdayStr = formatDate(d);
+
+            getPlannerData(yesterdayStr).then(data => {
+                const siteLog = data ? (data.siteLog || {}) : {};
+                if (!siteLog.equipment && !siteLog.manpower) {
+                    showToast("어제 기록된 인력/장비 데이터가 없습니다.");
+                    return;
+                }
+
+                const equipmentEl = document.getElementById("siteLogEquipment");
+                const manpowerEl = document.getElementById("siteLogManpower");
+
+                if (equipmentEl.value.trim() || manpowerEl.value.trim()) {
+                    if (!confirm("현재 입력된 장비/인력 내용이 있습니다. 어제 내용으로 덮어쓸까요?")) return;
+                }
+
+                equipmentEl.value = siteLog.equipment || "";
+                manpowerEl.value = siteLog.manpower || "";
+                saveSiteLogData();
+                showToast("어제 인력/장비 현황을 복사했습니다.");
+            });
+        }
+
+        // --- 현장일지: 날씨 자동 연동 (Open-Meteo) ---
+        const WEATHER_CODE_LABEL = {
+            0: { label: "맑음", icon: "☀️" }, 1: { label: "대체로 맑음", icon: "🌤️" }, 2: { label: "구름 조금", icon: "⛅" }, 3: { label: "흐림", icon: "☁️" },
+            45: { label: "안개", icon: "🌫️" }, 48: { label: "짙은 안개", icon: "🌫️" },
+            51: { label: "이슬비", icon: "🌦️" }, 53: { label: "이슬비", icon: "🌦️" }, 55: { label: "강한 이슬비", icon: "🌦️" },
+            56: { label: "언 이슬비", icon: "🌦️" }, 57: { label: "언 이슬비", icon: "🌦️" },
+            61: { label: "비", icon: "🌧️" }, 63: { label: "비", icon: "🌧️" }, 65: { label: "강한 비", icon: "🌧️" },
+            66: { label: "언 비", icon: "🌧️" }, 67: { label: "언 비", icon: "🌧️" },
+            71: { label: "눈", icon: "❄️" }, 73: { label: "눈", icon: "❄️" }, 75: { label: "강한 눈", icon: "❄️" }, 77: { label: "싸락눈", icon: "❄️" },
+            80: { label: "소나기", icon: "🌦️" }, 81: { label: "소나기", icon: "🌦️" }, 82: { label: "강한 소나기", icon: "🌦️" },
+            85: { label: "소나기눈", icon: "🌨️" }, 86: { label: "강한 소나기눈", icon: "🌨️" },
+            95: { label: "뇌우", icon: "⛈️" }, 96: { label: "뇌우(우박)", icon: "⛈️" }, 99: { label: "강한 뇌우(우박)", icon: "⛈️" }
+        };
+
+        function getSiteLocation() {
+            return new Promise((resolve, reject) => {
+                const cached = JSON.parse(localStorage.getItem("tabPlanner_siteLocation") || "null");
+                if (cached && cached.lat && cached.lon) {
+                    resolve(cached);
+                    return;
+                }
+                if (!navigator.geolocation) {
+                    reject(new Error("위치 정보를 지원하지 않는 브라우저입니다."));
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        const loc = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+                        localStorage.setItem("tabPlanner_siteLocation", JSON.stringify(loc));
+                        resolve(loc);
+                    },
+                    (err) => reject(err),
+                    { timeout: 8000 }
+                );
+            });
+        }
+
+        function fetchWeatherForDate(dateStr) {
+            return getSiteLocation().then(({ lat, lon }) => {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto&past_days=92&forecast_days=16`;
+                return fetch(url).then(res => {
+                    if (!res.ok) throw new Error("날씨 API 응답 오류");
+                    return res.json();
+                }).then(json => {
+                    const idx = json.daily.time.indexOf(dateStr);
+                    if (idx === -1) throw new Error("해당 날짜의 날씨 데이터를 찾을 수 없습니다.");
+                    const code = json.daily.weathercode[idx];
+                    const meta = WEATHER_CODE_LABEL[code] || { label: "정보 없음", icon: "🌡️" };
+                    return {
+                        code,
+                        label: meta.label,
+                        icon: meta.icon,
+                        tempMax: json.daily.temperature_2m_max[idx],
+                        tempMin: json.daily.temperature_2m_min[idx],
+                        precipitation: json.daily.precipitation_sum[idx]
+                    };
+                });
+            });
+        }
+
+        function displaySiteWeather(weather) {
+            const infoEl = document.getElementById("siteLogWeatherInfo");
+            const printEl = document.getElementById("siteLogWeatherPrint");
+
+            if (!weather) {
+                infoEl.innerHTML = `<i data-lucide="cloud" class="w-4 h-4"></i><span>날씨 정보를 불러오려면 새로고침을 눌러주세요.</span>`;
+                printEl.innerText = "";
+                lucide.createIcons();
+                return;
+            }
+
+            infoEl.innerHTML = `
+                <span class="text-base">${weather.icon}</span>
+                <span>${weather.label} · 최고 ${weather.tempMax}° / 최저 ${weather.tempMin}° · 강수량 ${weather.precipitation}mm</span>
+            `;
+            printEl.innerText = `날씨: ${weather.label} (최고 ${weather.tempMax}° / 최저 ${weather.tempMin}°, 강수량 ${weather.precipitation}mm)`;
+            lucide.createIcons();
+        }
+
+        function refreshSiteWeather() {
+            const infoEl = document.getElementById("siteLogWeatherInfo");
+            infoEl.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>날씨 정보를 불러오는 중...</span>`;
+            lucide.createIcons();
+
+            fetchWeatherForDate(selectedDateStr).then(weather => {
+                displaySiteWeather(weather);
+                getPlannerData(selectedDateStr).then(data => {
+                    const siteLog = data ? (data.siteLog || {}) : {};
+                    siteLog.weather = weather;
+                    savePlannerData(selectedDateStr, { siteLog });
+                });
+                showToast("날씨 정보를 갱신했습니다.");
+            }).catch(err => {
+                displaySiteWeather(null);
+                showToast("날씨 정보를 가져오지 못했습니다. 위치 권한을 확인해 주세요.");
+                console.error(err);
+            });
+        }
+
+        function autoLoadSiteWeather(data) {
+            const siteLog = data ? (data.siteLog || {}) : {};
+            if (siteLog.weather) {
+                displaySiteWeather(siteLog.weather);
+            } else {
+                displaySiteWeather(null);
+                fetchWeatherForDate(selectedDateStr).then(weather => {
+                    displaySiteWeather(weather);
+                    getPlannerData(selectedDateStr).then(d => {
+                        const sl = d ? (d.siteLog || {}) : {};
+                        sl.weather = weather;
+                        savePlannerData(selectedDateStr, { siteLog: sl });
+                    });
+                }).catch(() => {
+                    // 위치 권한 미허용 등으로 자동 조회가 실패해도 조용히 대기 (수동 새로고침 버튼 이용 가능)
+                });
+            }
+        }
+
+        // --- 현장일지: 인쇄/PDF 보고서 ---
+        function printSiteLogReport() {
+            document.getElementById("siteLogPrintDateLabel").innerText = `대상 일자: ${selectedDateStr}`;
+            document.body.classList.add("printing-sitelog");
+            const cleanup = () => document.body.classList.remove("printing-sitelog");
+            window.addEventListener("afterprint", cleanup, { once: true });
+            window.print();
         }
 
         function saveSiteLogData(showToastAlert = false) {
@@ -3524,6 +3809,7 @@
                 let todoTotal = 0, todoDone = 0;
                 let habitDone = 0, habitTotalPossible = 0;
                 let diaryDays = 0;
+                let manpowerTotal = 0;
                 const moodScoreMap = { excellent: 5, good: 4, neutral: 3, bad: 2, terrible: 1 };
                 let moodSum = 0, moodCount = 0;
 
@@ -3537,6 +3823,12 @@
                         habitDone += globalHabits.filter(h => r.habitChecks && r.habitChecks[h]).length;
                     }
                     if (r.diary && r.diary.trim()) diaryDays++;
+                    if (r.siteLog && r.siteLog.manpower) {
+                        const matches = r.siteLog.manpower.match(/(\d+)\s*명/g) || [];
+                        matches.forEach(m => {
+                            manpowerTotal += parseInt(m, 10) || 0;
+                        });
+                    }
                     if (r.mood && moodScoreMap[r.mood]) {
                         moodSum += moodScoreMap[r.mood];
                         moodCount++;
@@ -3549,6 +3841,7 @@
                 document.getElementById("weekTodoRate").innerText = `${todoRate}%`;
                 document.getElementById("weekHabitRate").innerText = `${habitRate}%`;
                 document.getElementById("weekDiaryCount").innerText = `${diaryDays}일`;
+                document.getElementById("weekManpowerTotal").innerText = `${manpowerTotal}명`;
 
                 if (moodCount > 0) {
                     const avg = moodSum / moodCount;
